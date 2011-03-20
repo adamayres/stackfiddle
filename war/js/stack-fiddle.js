@@ -48,7 +48,7 @@
 			"</div>";
 			
 		var getStackQuestionId = function() {
-			var id = 5297586; //5269290; //for debugging locally
+			var id = 5365997; //5297586; //5269290; //for debugging locally
 			var params = window.location.pathname.split("/");
 			for (var i = 0; i < params.length; i++) {
 			    if (params[i] == "questions" && i+1 < params.length) {
@@ -139,7 +139,6 @@
 						});
 						
 						dialog.close();
-						window.sfopen = false;
 					});
 					
 					var originalHeight = form.outerHeight();
@@ -169,12 +168,12 @@
 		        textarea.height(textarea.height() + 2);
 		    }
 		    showMoreLink.click(function() {
-				textarea.animate({ height: textarea.height() + 100}, 200);
+				textarea.animate({ height: "+=100px" }, 200);
 				return false;
 		    });
 		    
 		    showLessLink.click(function() {
-				textarea.animate({ height: textarea.height() <= 100 ? 10 : 100 }, 200);
+				textarea.animate({ height: textarea.height() <= 100 ? 10 : "-=100px" }, 200);
 				return false;
 		    });
 		};
@@ -230,6 +229,11 @@
 			});
 		};
 		
+		var closeDialog = function(dialogObj) {
+			window.sfopen = false;
+			dialog.close();
+		};
+		
 		return {
 			init: function() {
 				$("#sf-loader").remove();
@@ -254,7 +258,8 @@
 						opacity: 10,
 						minWidth: 350,
 						autoPosition: false,
-						onOpen: openDialog
+						onOpen: openDialog,
+						onClose: closeDialog
 					});
 				}
 			}
