@@ -6,6 +6,7 @@
 		var code;
 		var feedback;
 		var fiddleFrameworks;
+		var stackPageCodeBlocks;
 		var baseFiddleApiUri = "http://jsfiddle.net/api/post";
 		var defaultFiddleApiUri = baseFiddleApiUri + "/mootools/1.3.1/";
 		
@@ -17,7 +18,7 @@
 				"</div>" +
 				"<div id='sf-feedback'>Loading...</div>"  +
 				"<div id='sf-content'>" +
-					"<form id='sf-form' method='post' action='" + defaultFiddleApiUri + "'>" +
+					"<form id='sf-form' method='post' action='" + defaultFiddleApiUri + "' target='_blank'>" +
 						"<div id='sf-code' />" +
 						"<div class='sf-form-group'>" +
 							"<label for='sf-frameworks'>Framework</label>" +
@@ -33,14 +34,17 @@
 				"<label class='sf-code-label' />" +
 				"<textarea />" +
 				"<input type='radio' value='html' id='sf-code-html' />" +
-				"<label for='sf-code-html' id='sf-code-html'>HTML</label>" +
+				"<label for='sf-code-html'>HTML</label>" +
 				"<input type='radio' value='css' id='sf-code-css' />" +
-				"<label for='sf-code-css' id='sf-code-css'>CSS</label>" +
+				"<label for='sf-code-css'>CSS</label>" +
 				"<input type='radio' value='js' id='sf-code-js' />" +
-				"<label for='sf-code-js' id='sf-code-js'>JS</label>" +
+				"<label for='sf-code-js'>JS</label>" +
 				"<input type='radio' value='none' id='sf-code-none' />" +
-				"<label for='sf-code-none' id='sf-code-none'>None</label>" +
-				"<a href='#' class='sf-show-more'>Show More</a>" +
+				"<label for='sf-code-none'>None</label>" +
+				"<div class='sf-show-container'>" +
+					"<a href='#' class='sf-show-more sf-show'>More</a> | " +
+					"<a href='#' class='sf-show-less sf-show'>Less</a>" +
+				"</div>" +
 			"</div>";
 			
 		var getStackQuestionId = function() {
@@ -72,9 +76,10 @@
 					}).show();
 					
 					codeBlocks.each(function(i) {
-						var codeSubForm = $(codeSubFormTemplate);
+						var codeSubForm = $(codeSubFormTemplate); 
 						var textarea = codeSubForm.find("textarea");
 						var showMoreLink = codeSubForm.find(".sf-show-more");
+						var showLessLink = codeSubForm.find(".sf-show-less");
 						 
 						textarea.html($(this).html());
 						codeSubForm.find(".sf-code-label").html("Code Block " + (i + 1));
@@ -88,7 +93,13 @@
 						
 						code.append(codeSubForm);
 						
-						initShowMoreLink(showMoreLink, textarea);
+						initShowMoreLink(showLessLink, showMoreLink, textarea);
+						
+						codeSubForm.hover(function() {
+							stackPageCodeBlocks.eq(i).addClass("sf-highlight");
+						}, function () {
+							stackPageCodeBlocks.eq(i).removeClass("sf-highlight");
+						});
 					});
 					
 					$(":input[type='radio']", form[0]).live("click", function() {
@@ -126,58 +137,46 @@
 								form.append(hiddenInput);
 							}
 						});
+						
+						dialog.close();
+						window.sfopen = false;
 					});
 					
-					var originalHeight = form.height();
+					var originalHeight = form.outerHeight();
 					
 					form.height(0).css({
 						position: "static",
 						left:0
+					}).hide();
+					
+					content.animate({ height: originalHeight }, 200, function() {
+						content.css("height", "auto");
+						form.fadeIn(200);		
 					});
-
-					form.animate({ height: originalHeight }, 200);
-					form.show();
 					
 					feedback.text("Choose a content type for each code block");
 				}
 			});
 		};
 		
-		var initShowMoreLink = function(showMoreLink, textarea) {	
+		var initShowMoreLink = function(showLessLink, showMoreLink, textarea) {	
 			var textareaElement = textarea.get(0);
 			var originalHeight = textarea.height(); 
 		    if (textarea.height() === textareaElement.scrollHeight) {
-		        showMoreLink.remove();
 		        while (textarea.height() === textareaElement.scrollHeight) {
 		            textarea.height(textarea.height() - 1);
 		        } 
 		        textarea.height(textarea.height() + 2);
-		    } else {
-				showMoreLink.click(function() {
-					var link = $(this);
-					var scrollHeight = textareaElement.scrollHeight;
-					var viewHeight = textarea.height();
-					var scrollRemaining = viewHeight >= scrollHeight ? 0 : scrollHeight - viewHeight; 
-					var expandSize = 0;
-					
-					if (scrollRemaining >= 100) {
-						expandSize = viewHeight + 100;
-					} else if (scrollRemaining === 0) {
-						expandSize = (originalHeight > viewHeight - 100) ? originalHeight : viewHeight - 100;
-					} else {
-						expandSize = viewHeight + scrollRemaining;
-					}
-					
-					textarea.animate({ height: expandSize}, 300, function() {
-						if (textarea.height() >= scrollHeight) {
-							link.html("Show Less");
-						} else {
-							link.html("Show More");
-						}
-					});
-					return false;
-				});	
 		    }
+		    showMoreLink.click(function() {
+				textarea.animate({ height: textarea.height() + 100}, 200);
+				return false;
+		    });
+		    
+		    showLessLink.click(function() {
+				textarea.animate({ height: textarea.height() <= 100 ? 10 : 100 }, 200);
+				return false;
+		    });
 		};
 		
 		var loadFiddleFrameworks = function(parentObj) {
@@ -218,7 +217,13 @@
 		var openDialog = function(dialogObj) {
 			dialogObj.overlay.fadeIn(200, function () {
 				dialogObj.data.show();
-				dialogObj.container.css("height", "auto");
+				dialogObj.container.css({
+					height: "auto",
+					top: "30px",
+					right: "30px",
+					left: "auto",
+					position: "absolute"
+				});
 				dialogObj.container.fadeIn(200, function() {
 					loadStackCodeBlocks();	
 				});
@@ -227,22 +232,31 @@
 		
 		return {
 			init: function() {
-				content = $(contentTemplate);
-				form = content.find("#sf-form").hide();
-				code = content.find("#sf-code");
-				feedback = content.find("#sf-feedback");
-				fiddleFrameworks = content.find("#sf-frameworks");
-				
-				loadFiddleFrameworks();
-				
-				dialog = content.modal({
-					closeHTML: null,
-					overlayId: 'sf-overlay',
-					containerId: 'sf-container',
-					opacity: 10,
-					position: ["30px",],
-					onOpen: openDialog
-				});
+				$("#sf-loader").remove();
+				if (window.sfopen !== true) {
+					window.sfopen = true;
+					content = $(contentTemplate);
+					form = content.find("#sf-form").hide();
+					code = content.find("#sf-code");
+					feedback = content.find("#sf-feedback");
+					fiddleFrameworks = content.find("#sf-frameworks");
+					stackPageCodeBlocks = $("#question").find("code").map(function() {
+					    codeParent = $(this).parent("pre");
+					    return codeParent.size() > 0 ? codeParent.get() : this;
+					});
+					
+					loadFiddleFrameworks();
+					
+					dialog = content.modal({
+						closeHTML: null,
+						overlayId: 'sf-overlay',
+						containerId: 'sf-container',
+						opacity: 10,
+						minWidth: 350,
+						autoPosition: false,
+						onOpen: openDialog
+					});
+				}
 			}
 		};
 	}();
@@ -267,27 +281,34 @@
 			return valid;
 		};
 		
-		var loader = function(src, callback) {
-			var load = function(element, callback) {
-				// Attach handlers for all browsers
-				element.onload = element.onreadystatechange = function(_, isAbort) {
-					if (!element.readyState || /loaded|complete/.test(element.readyState)) {
-			
-						// Handle memory leak in IE
-						element.onload = element.onreadystatechange = null;
-			
-						// Remove the element
-						if (head && element.parentNode) {
-							//head.removeChild(element);
+		var loader = function() {
+			var loaded = {};
+			var load = function(key, element, callback) {
+				if (!loaded.hasOwnProperty(key)) {
+					loaded[key] = false;
+					// Attach handlers for all browsers
+					element.onload = element.onreadystatechange = function(_, isAbort) {
+						loaded[key] = true;
+						if (!element.readyState || /loaded|complete/.test(element.readyState)) {
+				
+							// Handle memory leak in IE
+							element.onload = element.onreadystatechange = null;
+				
+							// Remove the element
+							if (head && element.parentNode) {
+								//head.removeChild(element);
+							}
+				
+							// Dereference the element
+							element = undefined;
+							
+							if (typeof callback === "function") {
+								callback();
+							}
 						}
-			
-						// Dereference the element
-						element = undefined;
-						
-						callback();
-					}
-				};
-				head.insertBefore(element, head.firstChild);
+					};
+					head.insertBefore(element, head.firstChild);
+				}
 			};
 			
 			return {
@@ -296,26 +317,34 @@
 					script.setAttribute("async", "async");
 					script.setAttribute("src", src);
 					script.setAttribute("type","text/javascript");
-					load(script, callback);
+					load(src, script, callback);
 				},
-				css: function(href, callback) {
+				css: function(href) {
 					var link = document.createElement("link");
 					link.setAttribute("href", href);
 					link.setAttribute("rel", "stylesheet");
 					link.setAttribute("type", "text/css");
-					load(link, callback);
+					load(href, link);
+				},
+				loaded: function(key) {
+					return loaded[key] || false;
 				}
 			};
 		}();
-		
-		loader.css("http://stackfiddle.com/css/sf.css", function(){});
+
+		var baseUrl = "http://stackfiddle.com/";
+		var sfCssUrl = baseUrl + "css/stack-fiddle.css";
+		var modalJsUrl = baseUrl + "js/jquery.simplemodal.min.js";
+		var jQueryJsUrl = "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js";
+
+		loader.css(sfCssUrl);
 		
 		var loadModalScript = function() {
-			loader.js("http://stackfiddle.com/js/jquery.simplemodal.js", sfDialog.init);
+			loader.js(modalJsUrl, sfDialog.init);
 		};
 		
-		if (!(window.hasOwnProperty("jQuery") && jQuery.fn.jquery && versionLoaded(window.jQuery.fn.jquery, "1.4.4"))) {
-			loader.js("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js", loadModalScript);
+		if (!(window.hasOwnProperty("jQuery") && versionLoaded(window.jQuery.fn.jquery, "1.4.4"))) {
+			loader.js(jQueryJsUrl, loadModalScript);
 		} else {
 			loadModalScript();
 		}

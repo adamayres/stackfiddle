@@ -1,6 +1,6 @@
 #sf-overlay { background-color: #000; }
 
-#sf-container { -moz-box-shadow: 4px 4px 7px #ABABAB; background-color: #FEFEFE; border-color: -moz-use-text-color #AAAAAA #AAAAAA; border-right: 1px solid #AAAAAA; border-style: none solid solid; border-width: medium 1px 1px; font-family: Arial,Helvetica,sans-serif; width: 360px; text-align:left; }
+#sf-container { width:360px;background-color:#fefefe;border:1px solid #aaa;border-top:none;padding:0;font-family:Arial,Helvetica,sans-serif;-moz-box-shadow:4px 4px 7px #ababab;-webkit-box-shadow:4px 4px 7px #ababab;box-shadow:4px 4px 7px #ababab; text-align:left; }
 
 #sf-container div, 
 	#sf-container span, 
@@ -25,8 +25,11 @@
 #sf-container form input { font:12px; margin:0 3px 0 0; padding: 0; }
 
 #sf-container form label { font-size:10px; margin:0 10px 0 0; padding: 0; font-weight:bold; }
-#sf-container .sf-show-more { float:right; color: #0077CC; text-decoration: none; font-size:10px; }
-#sf-container .sf-show-more:hover { text-decoration: underline; }
+#sf-container .sf-show-container { float:right; font-size:10px; }
+#sf-container .sf-show { color: #0077CC; text-decoration: none; font-size:10px; }
+#sf-container .sf-show:hover { text-decoration: underline; }
 #sf-container #sf-submit { float:right; border: 1px solid #888888; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold; margin: 3px; padding: 2px; }
 #sf-container #sf-submit:hover { cursor: pointer; }
 #sf-container select { font-size: 11px; border:1px solid #ccc; }
+
+.sf-highlight, .sf-highlight code { background-color: #ffff99; }
