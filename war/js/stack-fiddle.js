@@ -138,7 +138,9 @@
 							}
 						});
 						
-						dialog.close();
+						setTimeout(function() {
+							dialog.close();	
+						}, 300);
 					});
 					
 					var originalHeight = form.outerHeight();
