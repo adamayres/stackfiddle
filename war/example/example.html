@@ -5,8 +5,7 @@
 		<title>Stack Fiddle Demo</title>
 	</head>
 	<body>
-		<a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='http:stackfiddle.com/js/stack-fiddle.js';})();">Stack Fiddle It!</a>
-		<script></script>
-		<script type="text/javascript" src="../js/stack-fiddle.js"></script>
+		<a href="javascript:(function(a){var b=a.body.appendChild(a.createElement('div'));b.id='sf-loader',b.setAttribute('style','position:absolute; top:0px; width:100%;'),b.innerHTML='<div style=\'display:inline-block; font-weight:bold; padding:5px; background:#FFF1A8;\'>Loading Stack Fiddle Libs...</div>',a.body.appendChild(a.createElement('script')).src='http://stackfiddle.com/js/stack-fiddle.min.js'})(document)">Stack Fiddle It!</a>
+		<!-- <script type="text/javascript" src="../js/stack-fiddle.js"></script> -->
 	</body>
 </html>
