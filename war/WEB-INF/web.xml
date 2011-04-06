@@ -12,7 +12,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Stackfiddle</servlet-name>
 		<url-pattern>/stackfiddle</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
+ 
+   <welcome-file-list>
+     <welcome-file>index.html</welcome-file>
+   </welcome-file-list>
 </web-app>

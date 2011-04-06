@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rubiks Cube Timer</title>
+		<link type="text/css" rel="stylesheet" href="timer.css"></link>
+	</head>
+	<body>
+		<div id="timer-container">
+			<ul id="times"></ul>
+			<ul id="moves"></ul>
+			<div class="timer">
+				<span class="minutes">0</span>:<span class="seconds">00</span>.<span class="tenths">0</span>
+			</div>
+			<div id="summary">
+				<span class="average-label">Average (<span class="average-runs"></span>) - <span class="average-time"></span></span>
+				<span class="trimmed-label">Trimmed (<span class="trimmed-runs"></span>) - <span class="trimmed-time"></span></span>
+			</div>
+		</div>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+		<script type="text/javascript" src="rubiks.timer.js"></script>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+ul { list-style: none; margin:0; padding:0; }
+
+#timer-container { width: 800px; height: 300px; background: #000; padding:10px; position:absolute; font-family:arial; }
+#moves { color: #c0c0c0; font-size:18px; }
+#moves li { float:left; margin-right:10px; }
+.timer { color: #ffc800; font-size: 180px; font-weight:bold; margin: 45px; }
+.timer-before-start .timer { color: #ff0000; }
+.timer-running .timer { color: #00ff00; }
+#times { float:right; color: #a0a0ff; font-size:16px; height: 253px; overflow:hidden; }
+#summary { display: none; position:absolute; bottom:10px; right:10px; font-size:20px; }
+
+.average-label, .trimmed-label { color: #c0c0c0; }
+
+.average-time, #times .fastest-time, #times .slowest-time { color: #6060c0; }
+.trimmed-time { color: #a0a0ff; }
