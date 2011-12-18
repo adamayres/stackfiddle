@@ -5,13 +5,13 @@ COMMA = ,
 COPY_YEAR = $(shell date "+%Y")
 DATE = $(shell date)
 
-SF = stack-fiddle
+SF = stackfiddle
 SF_FILE = src/${SF}.js
-SF_MIN_FILE = ${SF}.min.js
+SF_MIN_FILE = build/${SF}.min.js
 
-SFB = stack-fiddle-bookmarklet
+SFB = stackfiddle-bookmarklet
 SFB_FILE = src/${SFB}.js
-SFB_MIN_FILE = ${SFB}.min.js
+SFB_MIN_FILE = build/${SFB}.min.js
 
 define build_intro
 

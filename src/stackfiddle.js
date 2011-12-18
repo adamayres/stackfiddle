@@ -255,8 +255,8 @@
 					
 					dialog = content.modal({
 						closeHTML: null,
-						overlayId: 'sf-overlay',
-						containerId: 'sf-container',
+						overlayId: "sf-overlay",
+						containerId: "sf-container",
 						opacity: 10,
 						minWidth: 350,
 						autoPosition: false,
@@ -339,8 +339,8 @@
 			};
 		}();
 
-		var baseUrl = "http://stackfiddle.com/";
-		var sfCssUrl = baseUrl + "css/stack-fiddle.css";
+		var baseUrl = "";
+		var sfCssUrl = baseUrl + "css/stackfiddle.css";
 		var modalJsUrl = baseUrl + "js/jquery.simplemodal.min.js";
 		var jQueryJsUrl = "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js";
 
