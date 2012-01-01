@@ -1,4 +1,4 @@
-(function() {
+;(function() {
 
 var codes;
 
@@ -68,10 +68,10 @@ var openDialog = function(content) {
 var loaderDisplay = document.getElementById("sf-loader");
 loaderDisplay.parentNode.removeChild(loaderDisplay);
 
-ScriptLoader.addCss("http://stackfiddle.com/css/stackfiddle.css");
+ScriptLoader.addCss("http://localhost:8000/css/stackfiddle.css");
 StackFiddle.init({
 	stackUrl: window.location.pathname,
-	scripts: ["http://localhost:8000/build/jquery.simplemodal.min.js"],
+	scripts: ["http://localhost:8000/js/libs/jquery.simplemodal.min.js"],
 	onMouseoverCode: toggle,
 	onMouseoutCode: toggle,
 	openDialog: openDialog

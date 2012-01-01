@@ -20,6 +20,7 @@ var StackFiddle = function() {
 			scripts: [],
 			onMouseoverCode: function(){},
 			onMouseoutCode: function(){},
+			onCloseLinkClick: function() {},
 			openDialog: function(){}
 		}
 
@@ -56,14 +57,19 @@ var StackFiddle = function() {
 		if (isInit !== true) {
 			isInit = true;
 			
-			params = paramsArg;
+			for (a in paramsArg) {
+				params[a] = paramsArg[a];
+			}
 			
 			loadScripts(function() {
 				content = $(contentTemplate);
 				var form = content.find("#sf-form");
 				
+				content.find("#sf-close-link").click(params.onCloseLinkClick);
+				
 				updateFormWithFiddleFrameworks(form);
 				updateFormWithCodeBlocks(form);
+				
 				params.openDialog(content);
 			});
 		} else {
@@ -78,7 +84,7 @@ var StackFiddle = function() {
 	var contentTemplate = "" +
 		"<div id='sf-wrapper'>" +
 			"<div id='sf-header'>" +
-				"<div id='sf-close'><a href='#' class='simplemodal-close'>close</a></div>" +
+				"<div id='sf-close'><a id='sf-close-link' href='#' class='simplemodal-close'>close</a></div>" +
 				"<div id='sf-title'>Stack Fiddle It!</div>" +
 			"</div>" +
 			"<div id='sf-feedback'>Loading...</div>"  +
