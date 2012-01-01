@@ -1,0 +1,19 @@
+{
+	"name": "StackFiddle",
+	"version": "0.1",
+	"description": "The StackFiddle bookmarklet is used to quickly create jsFiddles from a StackOveflow question that contains code blocks of HTML, JavaScript and CSS.",
+	"page_action": {
+		"default_title": "",
+		"default_icon": "images/stackfiddle-16.png",
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"tabs", "http://stackoverflow.com/*"
+	],
+	"icons": {
+		"16": "images/stackfiddle-16.png",
+		"48": "images/stackfiddle-48.png",
+		"128": "images/stackfiddle-48.png"
+	},
+	"background_page": "background.html"
+}

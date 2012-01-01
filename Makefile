@@ -2,7 +2,7 @@
 # Make file to combine, uglify and lint JS libs
 #
 
-build: slmin sfmin sfbmin
+build: slmin sfmin bookmin chromemin
 
 INTRO_FILE = templates/intro
 NEWLINE_FILE = templates/newline
@@ -12,20 +12,8 @@ INDEX_FILE = build/index.html
 COPY_YEAR = $(shell date "+%Y")
 DATE = $(shell date)
 
-SF = stackfiddle
-SF_FILE = src/${SF}.js
-SF_MIN_FILE = build/${SF}.min.js
-
-SFB = stackfiddle-bookmarklet
-SFB_FILE = src/${SFB}.js
-SFB_MIN_FILE = build/${SFB}.min.js
-
-SL = scriptloader
-SL_FILE = src/${SL}.js
-SL_MIN_FILE = build/${SL}.min.js
-
 #
-# build_intro (library title, path to lib, path to file, path to min file)
+# build_intro (library title, root, path to lib)
 #
 
 define build_intro
@@ -33,24 +21,25 @@ define build_intro
 sed -e 's/@DATE/${DATE}/' \
 		-e 's/@COPY_YEAR/${COPY_YEAR}/' \
 		-e 's/@LIB/${1}/' \
-		-e 's/@PATH/${2}/' \
+		-e 's/@PATH/${3}/' \
 	${INTRO_FILE} > ${INTRO_FILE}.tmp
 	
-uglifyjs -nc ${3} > ${4}
-cat ${INTRO_FILE}.tmp ${4} > ${4}.tmp
-mv ${4}.tmp ${4}
+uglifyjs -nc ${2}src/${3}.js > ${2}build/${3}.min.js
+cat ${INTRO_FILE}.tmp ${2}build/${3}.min.js > ${2}build/${3}.min.js.tmp
+mv ${2}build/${3}.min.js.tmp ${2}build/${3}.min.js
 rm -rf ${INTRO_FILE}.tmp
 
 endef
 
 define combine
 
-cat ${1} ${NEWLINE_FILE} ${2} > ${2}.tmp
-mv ${2}.tmp ${2}
-rm -rf ${2}.tmp
+cat ${1} ${NEWLINE_FILE} ${2} > ${3}
 
 endef
 
+#
+# Escapes JavaScript for use in HTML as a String
+#
 define escape
 
 sed -e s/\'/\\\\\'/g \
@@ -62,38 +51,57 @@ rm -rf ${1}.tmp
 
 endef
 
+#
+# Creates the anchor tag for the bookmarklet
+#
 define build_link
-
-#sed -e 's/\\/\\\\/g' \
-#	-e 's/\//\\\//g' \
-#	-e 's/&/\\\&/g' \
-#	${1} > ${1}.tmp
-
-#sed -e 's/@SCRIPT/$(shell cat ${1}.tmp)/' \
-#	${INDEX_FILE} > ${INDEX_FILE}.tmp
-
-#mv ${INDEX_FILE}.tmp index.html	
-#rm -rf ${INDEX_FILE}.tmp
-#rm -rf ${1}.tmp
 
 cat ${INDEX_START_FILE} ${1} ${INDEX_END_FILE} > ${INDEX_FILE}
 
 endef
+
+#
+# Minifies all files in the src dir into the build dir
+#
+define build_all
+
+for file in src/*; do \
+	y=$${file%.*}.min.js; \
+	z=$${y##*/}; \
+	uglifyjs -nc $${file} > build/$${z}; \
+done
+
+endef
 	
 sfmin:
-	$(call build_intro,StackFiddle,stackfiddle,${SF_FILE},${SF_MIN_FILE})
-	$(call combine,${SL_MIN_FILE},${SF_MIN_FILE})
+	$(call build_intro,StackFiddle,,stackfiddle)
+	$(call build_intro,StackFiddle Link,,stackfiddle-link)
+	$(call combine,build/scriptloader.min.js,build/stackfiddle.min.js,build/sl-sf.min.js)
+	$(call combine,build/sl-sf.min.js,build/stackfiddle-link.min.js,build/sl-sf-link.min.js)
 	
-slmin:
-	$(call build_intro,Scriptloader,scriptloader,${SL_FILE},${SL_MIN_FILE})
-		
 sflint:
-	jslint ${SF_FILE}
+	jslint src/stackfiddle.js
 
-sfbmin: 
-	uglifyjs -nc ${SFB_FILE} > ${SFB_MIN_FILE}
-	$(call escape,${SFB_MIN_FILE})
-	$(call build_link,${SFB_MIN_FILE})
+slmin:
+	$(call build_intro,Scriptloader,,scriptloader)
+		
+sllint:
+	jslint src/scriptloader.js
+
+bookmin: 
+	uglifyjs -nc src/bookmarklet.js > build/bookmarklet.min.js
+	$(call escape,build/bookmarklet.min.js)
+	$(call build_link,build/bookmarklet.min.js)
 	
-sfblint:
-	jslint ${SFB_FILE}
+booklint:
+	jslint src/bookmarklet.js
+	
+chromemin:
+	$(call build_intro,StackFiddle Content Script,chrome/,content)
+	$(call build_intro,StackFiddle Background,chrome/,background)
+	$(call build_intro,StackFiddle Chrome Init,chrome/,stackfiddle-chrome)
+	$(call combine,build/sl-sf.min.js,chrome/build/stackfiddle-chrome.min.js,chrome/build/sl-sf-chrome.min.js)
+	cp css/stackfiddle.css chrome/css/stackfiddle.css
+	
+minall:
+	#$(call build_all,/src/*)
