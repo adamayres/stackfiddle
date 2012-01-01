@@ -1,7 +1,7 @@
 {
 	"name": "StackFiddle",
 	"version": "0.1",
-	"description": "The StackFiddle bookmarklet is used to quickly create jsFiddles from a StackOveflow question that contains code blocks of HTML, JavaScript and CSS.",
+	"description": "The StackFiddle extension is used to quickly create jsFiddles from a StackOveflow question that contains code blocks of HTML, JavaScript and CSS.",
 	"page_action": {
 		"default_title": "",
 		"default_icon": "images/stackfiddle-16.png",

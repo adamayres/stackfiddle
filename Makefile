@@ -98,6 +98,8 @@ chromemin:
 	cp js/min/background.min.js chrome/js/background.min.js
 	cp js/min/content.min.js chrome/js/content.min.js
 	cp js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
+	
+	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
 cleanup:
 	rm -rf build/scriptloader.min.js
