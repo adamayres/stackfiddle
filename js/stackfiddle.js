@@ -16,12 +16,12 @@ var StackFiddle = function() {
 	var content,
 		
 		params = {
-			stackUrl: "",
-			scripts: [],
-			onMouseoverCode: function(){},
-			onMouseoutCode: function(){},
-			onCloseLinkClick: function() {},
-			openDialog: function(){}
+			stackUrl: "", //the URL to get the stackoverflow question ID from
+			scripts: [], //additional scripts to be loaded
+			onMouseoverCode: function(){}, //callback when a code block is moused over
+			onMouseoutCode: function(){}, //callback when a code block is moused out
+			onCloseLinkClick: function() {}, //callback when close link is clicked
+			openDialog: function(){} //function call to open the dialog
 		}
 
 		isInit = false;

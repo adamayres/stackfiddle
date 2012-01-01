@@ -1,3 +1,7 @@
+/*
+ * Initialize stackfiddle for use with a chrome
+ * page action extension.
+ */
 chrome.tabs.getSelected(null, function(tab) {
 	var toggle = function(hover, codeIndex) {
 		chrome.tabs.sendRequest(tab.id, { hover: hover, codeIndex: codeIndex });

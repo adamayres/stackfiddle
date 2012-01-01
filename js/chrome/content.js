@@ -1,6 +1,15 @@
+/*
+ * Setup communication between page action popup
+ * and the underlying page to allow for hover 
+ * states on code blocks.
+ */
 (function() {
 	var codes;
 	
+	/*
+	 * Get the code blocks from the page,
+	 * cache values for future lookups.
+	 */
 	var getCodes = function() {
 		if (codes) {
 			return codes;
