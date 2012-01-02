@@ -1,7 +1,7 @@
 {
 	"name": "StackFiddle",
 	"version": "0.1",
-	"description": "The StackFiddle extension is used to quickly create jsFiddles from a StackOveflow question that contains code blocks of HTML, JavaScript and CSS.",
+	"description": "StackFiddle allows you to quickly create a jsFiddle from a StackOveflow question that contains code blocks of HTML, JS and CSS.",
 	"page_action": {
 		"default_title": "",
 		"default_icon": "images/stackfiddle-16.png",
