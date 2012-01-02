@@ -110,6 +110,7 @@ cleanup:
 	rm -rf js/min/background.min.js
 	rm -rf js/min/content.min.js
 	rm -rf js/min/sl-sf.min.js
+	rm -rf js/min/sl-sf-chrome.min.js
 	rm -rf js/min/stackfiddle-link.min.js
 	rm -rf js/min/stackfiddle-chrome.min.js
 	rm -rf js/sl-sf.js
