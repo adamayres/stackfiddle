@@ -2,7 +2,7 @@
 # Make file to combine, uglify and lint JS libs
 #
 
-build: sfmin bookmin chromemin
+build: sfmin bookmin booklink chromemin cleanup
 
 INTRO_FILE = templates/intro
 NEWLINE_FILE = templates/newline
@@ -38,14 +38,11 @@ cat ${1} ${NEWLINE_FILE} ${2} > ${3}
 endef
 
 #
-# Escapes JavaScript for use in HTML as a String
+# URL encodes JavaScript for use in HTML as a String
 #
-define escape
+define urlencode
 
-sed -e s/\'/\\\\\'/g \
-	-e s/\"/\'/g \
-	${1} > ${1}.tmp
-
+cat ${1} | python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())' > ${1}.tmp
 mv ${1}.tmp ${1}	
 rm -rf ${1}.tmp
 
@@ -83,7 +80,9 @@ sfmin:
 
 bookmin: 
 	uglifyjs -nc js/link/bookmarklet.js > js/min/bookmarklet.min.js
-	$(call escape,js/min/bookmarklet.min.js)
+	$(call urlencode,js/min/bookmarklet.min.js)
+	
+booklink:
 	$(call build_link,js/min/bookmarklet.min.js)
 
 chromemin:
@@ -102,13 +101,14 @@ chromemin:
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
 cleanup:
-	rm -rf build/scriptloader.min.js
-	rm -rf build/stackfiddle.min.js
-	rm -rf build/bookmarklet.min.js
-	rm -rf build/sl-sf.min.js
-	rm -rf build/stackfiddle-link.min.js
-	rm -rf build/stackfiddle-chrome.min.js
-	rm -rf build
+	rm -rf js/min/scriptloader.min.js
+	rm -rf js/min/stackfiddle.min.js
+	rm -rf js/min/bookmarklet.min.js
+	rm -rf js/min/background.min.js
+	rm -rf js/min/content.min.js
+	rm -rf js/min/sl-sf.min.js
+	rm -rf js/min/stackfiddle-link.min.js
+	rm -rf js/min/stackfiddle-chrome.min.js
 	
 minall:
 	#$(call build_all,/js/*)
