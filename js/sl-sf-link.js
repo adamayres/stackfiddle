@@ -259,7 +259,7 @@ var StackFiddle = function() {
 		 * Get the stackoverflow question id from the URL.
 		 */	
 		var getStackQuestionId = function() {
-			var id = 5365997; //5297586; //5269290; //for debugging locally
+			var id = 5358066; //5297586; //5269290; //for debugging locally
 			var urlParams = params.stackUrl.split("/");
 			for (var i = 0; i < urlParams.length; i++) {
 			    if (urlParams[i] == "questions" && i+1 < urlParams.length) {
@@ -277,12 +277,17 @@ var StackFiddle = function() {
 			var textareaElement = textarea.get(0),
 				originalHeight = textarea.height();
 			 
-		    if (textarea.height() === textareaElement.scrollHeight) {
-		        while (textarea.height() === textareaElement.scrollHeight) {
-		            textarea.height(textarea.height() - 1);
-		        } 
-		        textarea.height(textarea.height() + 2);
+		    if (textarea.height() === 0) {
+		    	textarea.height(100);
+			} else {
+				if (textarea.height() === textareaElement.scrollHeight) {
+					while (textarea.height() === textareaElement.scrollHeight) {
+						textarea.height(textarea.height() - 1);
+			        } 
+					textarea.height(textarea.height() + 2);
+				}
 		    }
+		    
 		    showMoreLink.click(function() {
 				textarea.animate({ height: "+=100px" }, 200);
 				return false;
@@ -292,6 +297,30 @@ var StackFiddle = function() {
 				textarea.animate({ height: textarea.height() <= 100 ? 10 : "-=100px" }, 200);
 				return false;
 		    });
+		};
+		
+		var langMap = {
+			js: ["$", "(", "v", ";"],
+			html: ["<", "&"],
+			css: [".", "#"]
+		}
+		
+		/*
+		 * Naive approach to try and determine code language through
+		 * basic parsing of first valid character.
+		 */
+		var detectCodeLanguage = function(content, codeSubForm) {
+			/*
+			 * Remove comments from the content
+			 */
+			var firstCodeLetter = $.trim(content.replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, ""))[0];
+			
+			for (lang in codeMap) {
+				if ($.inArray(firstCodeLetter, langMap[lang]) > -1) {
+					codeSubForm.find("input[value='" + lang + "']").attr("checked", true);
+					break;
+				}
+			}
 		};
 		
 		/*
@@ -332,7 +361,8 @@ var StackFiddle = function() {
 					
 					code.append(codeSubForm);
 					
-					//initShowMoreLink(showLessLink, showMoreLink, textarea);
+					detectCodeLanguage(textarea.html(), codeSubForm);
+					initShowMoreLink(showLessLink, showMoreLink, textarea);
 					
 					codeSubForm.hover(function() {
 						params.onMouseoverCode(true, i);
