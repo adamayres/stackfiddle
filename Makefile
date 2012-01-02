@@ -75,6 +75,9 @@ sfmin:
 	$(call build_intro,StackFiddle,,stackfiddle)
 	$(call build_intro,StackFiddle Link,link/,stackfiddle-link)
 	
+	$(call combine,js/scriptloader.js,js/stackfiddle.js,js/sl-sf.js)
+	$(call combine,js/sl-sf.js,js/link/stackfiddle-link.js,js/sl-sf-link.js)
+	
 	$(call combine,js/min/scriptloader.min.js,js/min/stackfiddle.min.js,js/min/sl-sf.min.js)
 	$(call combine,js/min/sl-sf.min.js,js/min/stackfiddle-link.min.js,js/min/sl-sf-link.min.js)
 
@@ -109,6 +112,7 @@ cleanup:
 	rm -rf js/min/sl-sf.min.js
 	rm -rf js/min/stackfiddle-link.min.js
 	rm -rf js/min/stackfiddle-chrome.min.js
+	rm -rf js/sl-sf.js
 	
 minall:
 	#$(call build_all,/js/*)

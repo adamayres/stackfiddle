@@ -22,7 +22,7 @@ var getCodes = function() {
 }
 
 var toggle = function(hover, codeIndex) {
-	$(getCodes()[i]).toggleClass("sf-highlight");
+	$(getCodes()[codeIndex].parentNode).toggleClass("sf-highlight");
 }
 
 var isOpen = false,
