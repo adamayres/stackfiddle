@@ -77,7 +77,11 @@ StackFiddle.init({
 	scripts: ["http://stackfiddle.com/js/libs/jquery.simplemodal.min.js"],
 	onMouseoverCode: toggle,
 	onMouseoutCode: toggle,
-	openDialog: openDialog
+	openDialog: openDialog,
+	closeDialog: function() {
+		dialog.close();
+	},
+	applyEventListenersOnOpen: true
 });
 
 })();

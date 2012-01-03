@@ -12,11 +12,11 @@ chrome.tabs.getSelected(null, function(tab) {
 		scripts: [],
 		onMouseoverCode: toggle,
 		onMouseoutCode: toggle,
-		onCloseLinkClick: function() {
-			window.close();
-		},
 		openDialog: function(content) {
 			$("#sf-container").empty().append(content);	
+		},
+		closeDialog: function() {
+			window.close();
 		}
 	});
 });

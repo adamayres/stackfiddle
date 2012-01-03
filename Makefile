@@ -80,6 +80,10 @@ sfmin:
 	
 	$(call combine,js/min/scriptloader.min.js,js/min/stackfiddle.min.js,js/min/sl-sf.min.js)
 	$(call combine,js/min/sl-sf.min.js,js/min/stackfiddle-link.min.js,js/min/sl-sf-link.min.js)
+	
+sf: 
+	$(call combine,js/scriptloader.js,js/stackfiddle.js,js/sl-sf.js)
+	$(call combine,js/sl-sf.js,js/link/stackfiddle-link.js,js/sl-sf-link.js)
 
 bookmin: 
 	uglifyjs -nc js/link/bookmarklet.js > js/min/bookmarklet.min.js
@@ -95,11 +99,14 @@ chromemin:
 	
 	$(call combine,js/min/sl-sf.min.js,js/min/stackfiddle-chrome.min.js,js/min/sl-sf-chrome.min.js)
 	
+	$(call combine,js/sl-sf.js,js/chrome/stackfiddle-chrome.js,js/sl-sf-chrome.js)
+	
 	cp css/stackfiddle.css chrome/css/stackfiddle.css
 	
 	cp js/min/background.min.js chrome/js/background.min.js
 	cp js/min/content.min.js chrome/js/content.min.js
 	cp js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
+	mv js/sl-sf-chrome.js chrome/js/sl-sf-chrome.js
 	
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
