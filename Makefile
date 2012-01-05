@@ -1,22 +1,18 @@
 #
 # Make file to combine, uglify and lint JS libs
 #
+build: sfmin bookmin booklink chrome cleanup
 
-build: sfmin bookmin booklink chromemin cleanup
-
-INTRO_FILE = templates/intro
-NEWLINE_FILE = templates/newline
-INDEX_START_FILE = templates/index_start
-INDEX_END_FILE = templates/index_end
-INDEX_FILE = test/index.html
-COPY_YEAR = $(shell date "+%Y")
-DATE = $(shell date)
-
+#
+# Builds the intros for each JavaScript file
 #
 # build_intro (library title, root, path to lib)
 #
-
 define build_intro
+
+INTRO_FILE = templates/intro
+COPY_YEAR = $(shell date "+%Y")
+DATE = $(shell date)
 
 sed -e 's/@DATE/${DATE}/' \
 		-e 's/@COPY_YEAR/${COPY_YEAR}/' \
@@ -31,14 +27,21 @@ rm -rf ${INTRO_FILE}.tmp
 
 endef
 
+#
+# Combines files with newlines
+#
+# combine (first file, second file, output file)
+#
 define combine
 
-cat ${1} ${NEWLINE_FILE} ${2} > ${3}
+cat ${1} templates/newline ${2} > ${3}
 
 endef
 
 #
 # URL encodes JavaScript for use in HTML as a String
+#
+# urlencode (file)
 #
 define urlencode
 
@@ -51,14 +54,19 @@ endef
 #
 # Creates the anchor tag for the bookmarklet
 #
+# build_link (file)
+#
 define build_link
 
-cat ${INDEX_START_FILE} ${1} ${INDEX_END_FILE} > ${INDEX_FILE}
+cat templates/index_start ${1} templates/index_end > test/index.html
 
 endef
 
 #
-# Minifies all files in the src dir into the build dir
+# Minifies all files in the src dir into the build dir.
+# Renames the files to be filename.min.js
+#
+# build_all()
 #
 define build_all
 
@@ -70,6 +78,10 @@ done
 
 endef
 	
+sf: 
+	$(call combine,js/scriptloader.js,js/stackfiddle.js,js/sl-sf.js)
+	$(call combine,js/sl-sf.js,js/link/stackfiddle-link.js,js/sl-sf-link.js)
+
 sfmin:
 	$(call build_intro,Scriptloader,,scriptloader)
 	$(call build_intro,StackFiddle,,stackfiddle)
@@ -81,10 +93,6 @@ sfmin:
 	$(call combine,js/min/scriptloader.min.js,js/min/stackfiddle.min.js,js/min/sl-sf.min.js)
 	$(call combine,js/min/sl-sf.min.js,js/min/stackfiddle-link.min.js,js/min/sl-sf-link.min.js)
 	
-sf: 
-	$(call combine,js/scriptloader.js,js/stackfiddle.js,js/sl-sf.js)
-	$(call combine,js/sl-sf.js,js/link/stackfiddle-link.js,js/sl-sf-link.js)
-
 bookmin: 
 	uglifyjs -nc js/link/bookmarklet.js > js/min/bookmarklet.min.js
 	$(call urlencode,js/min/bookmarklet.min.js)
@@ -92,7 +100,7 @@ bookmin:
 booklink:
 	$(call build_link,js/min/bookmarklet.min.js)
 
-chromemin:
+chrome:
 	$(call build_intro,StackFiddle Content Script,chrome/,content)
 	$(call build_intro,StackFiddle Background,chrome/,background)
 	$(call build_intro,StackFiddle Chrome Init,chrome/,stackfiddle-chrome)
@@ -103,9 +111,9 @@ chromemin:
 	
 	cp css/stackfiddle.css chrome/css/stackfiddle.css
 	
-	cp js/min/background.min.js chrome/js/background.min.js
-	cp js/min/content.min.js chrome/js/content.min.js
-	cp js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
+	mv js/min/background.min.js chrome/js/background.min.js
+	mv js/min/content.min.js chrome/js/content.min.js
+	mv js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
 	mv js/sl-sf-chrome.js chrome/js/sl-sf-chrome.js
 	
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
@@ -114,10 +122,7 @@ cleanup:
 	rm -rf js/min/scriptloader.min.js
 	rm -rf js/min/stackfiddle.min.js
 	rm -rf js/min/bookmarklet.min.js
-	rm -rf js/min/background.min.js
-	rm -rf js/min/content.min.js
 	rm -rf js/min/sl-sf.min.js
-	rm -rf js/min/sl-sf-chrome.min.js
 	rm -rf js/min/stackfiddle-link.min.js
 	rm -rf js/min/stackfiddle-chrome.min.js
 	rm -rf js/sl-sf.js
