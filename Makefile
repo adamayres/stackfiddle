@@ -1,7 +1,7 @@
 #
 # Make file to combine, uglify and lint JS libs
 #
-build: sfmin bookmin booklink chrome cleanup
+build: sfmin bookmin booklink chrome chromezip cleanup
 
 #
 # Builds the intros for each JavaScript file
@@ -115,7 +115,8 @@ chrome:
 	mv js/min/content.min.js chrome/js/content.min.js
 	mv js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
 	mv js/sl-sf-chrome.js chrome/js/sl-sf-chrome.js
-	
+
+chromezip:
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
 cleanup:
