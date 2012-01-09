@@ -166,7 +166,7 @@ var StackFiddle = function() {
 			scripts.push("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
 		}
 		
-		scripts.push("http://localhost:8000/js/libs/jquery.nanoscroller.js");
+		scripts.push("http://stackfiddle.com/js/libs/jquery.nanoscroller.js");
 		scripts = scripts.concat(params.scripts);
 		
 		var loadAdditionalScripts = function() {

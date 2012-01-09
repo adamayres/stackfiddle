@@ -166,7 +166,7 @@ var StackFiddle = function() {
 			scripts.push("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
 		}
 		
-		scripts.push("http://localhost:8000/js/libs/jquery.nanoscroller.js");
+		scripts.push("http://stackfiddle.com/js/libs/jquery.nanoscroller.js");
 		scripts = scripts.concat(params.scripts);
 		
 		var loadAdditionalScripts = function() {
@@ -611,7 +611,7 @@ var openDialog = function(content) {
 var loaderDisplay = document.getElementById("sf-loader");
 loaderDisplay.parentNode.removeChild(loaderDisplay);
 
-ScriptLoader.addCss("http://localhost:8000/css/stackfiddle.css");
+ScriptLoader.addCss("http://stackfiddle.com/css/stackfiddle.css");
 StackFiddle.init({
 	stackUrl: window.location.pathname,
 	scripts: ["http://stackfiddle.com/js/libs/jquery.simplemodal.min.js"],
