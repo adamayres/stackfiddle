@@ -162,7 +162,7 @@ var StackFiddle = function() {
 			scripts = [];
 		
 		if (!(window.hasOwnProperty("jQuery") && 
-				ScriptLoader.isVersionLoaded(window.jQuery.fn.jquery, "1.4.4"))) {
+				ScriptLoader.isVersionLoaded(window.jQuery.fn.jquery, "1.6.0"))) {
 			scripts.push("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
 		}
 		
