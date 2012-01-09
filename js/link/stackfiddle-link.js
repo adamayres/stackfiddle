@@ -11,18 +11,22 @@ var getCodes = function() {
 	}
 	codes = [];
 	var question = document.getElementById("question");
-	var nodeList = question.getElementsByTagName("code");
-	
-	for (i = 0; i < nodeList.length; i++) {
-		if (nodeList[i].parentNode.tagName.toLowerCase() === "pre") {
-			codes.push(nodeList[i]);				
+	if (question) {
+		var nodeList = question.getElementsByTagName("code");
+		
+		for (i = 0; i < nodeList.length; i++) {
+			if (nodeList[i].parentNode.tagName.toLowerCase() === "pre") {
+				codes.push(nodeList[i]);				
+			}
 		}
 	}
 	return codes;
 }
 
 var toggle = function(hover, codeIndex) {
-	$(getCodes()[codeIndex].parentNode).toggleClass("sf-highlight");
+	if (getCodes().length > 0) {
+		$(getCodes()[codeIndex].parentNode).toggleClass("sf-highlight");
+	}
 }
 
 var isOpen = false,
@@ -71,7 +75,7 @@ var openDialog = function(content) {
 var loaderDisplay = document.getElementById("sf-loader");
 loaderDisplay.parentNode.removeChild(loaderDisplay);
 
-ScriptLoader.addCss("http://stackfiddle.com/css/stackfiddle.css");
+ScriptLoader.addCss("http://localhost:8000/css/stackfiddle.css");
 StackFiddle.init({
 	stackUrl: window.location.pathname,
 	scripts: ["http://stackfiddle.com/js/libs/jquery.simplemodal.min.js"],

@@ -1,7 +1,11 @@
 #
 # Make file to combine, uglify and lint JS libs
 #
-build: sfmin bookmin booklink chrome chromezip cleanup
+build: sfmin bookmin booklink chrome2 cleanup
+
+INTRO_FILE = templates/intro
+COPY_YEAR = $(shell date "+%Y")
+DATE = $(shell date)
 
 #
 # Builds the intros for each JavaScript file
@@ -9,10 +13,6 @@ build: sfmin bookmin booklink chrome chromezip cleanup
 # build_intro (library title, root, path to lib)
 #
 define build_intro
-
-INTRO_FILE = templates/intro
-COPY_YEAR = $(shell date "+%Y")
-DATE = $(shell date)
 
 sed -e 's/@DATE/${DATE}/' \
 		-e 's/@COPY_YEAR/${COPY_YEAR}/' \
@@ -100,7 +100,7 @@ bookmin:
 booklink:
 	$(call build_link,js/min/bookmarklet.min.js)
 
-chrome:
+chrome2:
 	$(call build_intro,StackFiddle Content Script,chrome/,content)
 	$(call build_intro,StackFiddle Background,chrome/,background)
 	$(call build_intro,StackFiddle Chrome Init,chrome/,stackfiddle-chrome)
@@ -116,7 +116,6 @@ chrome:
 	mv js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
 	mv js/sl-sf-chrome.js chrome/js/sl-sf-chrome.js
 
-chromezip:
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
 cleanup:

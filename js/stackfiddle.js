@@ -31,23 +31,26 @@ var StackFiddle = function() {
 	 * Loads the JavaScript and CSS needed for the bookmarklet.
 	 */
 	var loadScripts = function(callback) {
-		var jQueryJsUrl = "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js",
-			i = 0;
+		var i = 0,
+			scripts = [];
+		
+		if (!(window.hasOwnProperty("jQuery") && 
+				ScriptLoader.isVersionLoaded(window.jQuery.fn.jquery, "1.4.4"))) {
+			scripts.push("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
+		}
+		
+		scripts.push("http://localhost:8000/js/libs/jquery.nanoscroller.js");
+		scripts = scripts.concat(params.scripts);
 		
 		var loadAdditionalScripts = function() {
-			if (i < params.scripts.length) {
-				ScriptLoader.addJs(params.scripts[i++], loadAdditionalScripts);
+			if (i < scripts.length) {
+				ScriptLoader.addJs(scripts[i++], loadAdditionalScripts);
 			} else {
 				callback();
 			}
-		}
-				
-		if (!(window.hasOwnProperty("jQuery") && 
-				ScriptLoader.isVersionLoaded(window.jQuery.fn.jquery, "1.4.4"))) {
-			ScriptLoader.addJs(jQueryJsUrl, loadAdditionalScripts);
-		} else {
-			loadAdditionalScripts();
-		}
+		};
+		
+		loadAdditionalScripts();
 	}
 	
 	/*
@@ -66,7 +69,7 @@ var StackFiddle = function() {
 				content = $(contentTemplate);
 				var form = content.find("#sf-form"),
 					frameworksSelect = form.find("#sf-frameworks");
-				
+
 				params.openDialog(content);
 				
 				updateFormWithFiddleFrameworks(form, frameworksSelect);
@@ -84,12 +87,14 @@ var StackFiddle = function() {
 		"<div id='sf-wrapper'>" +
 			"<div id='sf-header'>" +
 				"<div id='sf-close'><a id='sf-close-link' href='#' class='simplemodal-close'>close</a></div>" +
-				"<div id='sf-title'>Stack Fiddle It!</div>" +
+				"<div id='sf-title'>StackFiddle</div>" +
 			"</div>" +
 			"<div id='sf-feedback'>Loading...</div>"  +
 			"<div id='sf-content'>" +
 				"<form id='sf-form' method='post' action='http://jsfiddle.net/api/post/mootools/1.3.2/' target='_blank'>" +
-					"<div id='sf-code' />" +
+				 	"<div id='sf-code-container'>" +
+						"<div id='sf-code' />" +
+					"</div>" +
 					"<div class='sf-form-group'>" +
 						"<label for='sf-frameworks'>Framework</label>" +
 						"<select id='sf-frameworks'><option>Loading...</option></select>" +
@@ -131,7 +136,7 @@ var StackFiddle = function() {
 		 * Get the stackoverflow question id from the URL.
 		 */	
 		var getStackQuestionId = function() {
-			var id = 5358066; //5297586; //5269290; //for debugging locally
+			var id = 5358066; //8755619; //; //5297586; //5269290; //for debugging locally
 			var urlParams = params.stackUrl.split("/");
 			for (var i = 0; i < urlParams.length; i++) {
 			    if (urlParams[i] == "questions" && i+1 < urlParams.length) {
@@ -160,7 +165,7 @@ var StackFiddle = function() {
 			
 			for (lang in langMap) {
 				if ($.inArray(firstCodeLetter, langMap[lang]) > -1) {
-					codeSubForm.find("input[value='" + lang + "']").attr("checked", true);
+					codeSubForm.find("input[value='" + lang + "']").prop("checked", true);
 					break;
 				}
 			}
@@ -206,21 +211,28 @@ var StackFiddle = function() {
 					
 					var resizeTextarea = function() {
 						textarea.height(0).css({resize:"none"});
-    					textarea.height(textarea.get(0).scrollHeight).css({resize:"auto"});
+						var height = textarea.get(0).scrollHeight > 100 ? 100 : textarea.get(0).scrollHeight;
+    					textarea.height(height).css({resize:"auto"});
 					}
 					
 					if (!textarea.is(":hidden")) {
 						resizeTextarea();
+						if (codeBlocks.length == i+1) {
+							resizeContainer();
+						}
 					} else {
 						var pollerCount = 20;
 						var poller = window.setInterval(function() {
 							if (!textarea.is(":hidden") || pollerCount-- == 0) {
 								window.clearInterval(poller);
 								resizeTextarea();
+								if (codeBlocks.length == i+1) {
+									resizeContainer();
+								}
 							}
 						}, 50);
 					}
-		    
+					
 					detectCodeLanguage(textarea.html(), codeSubForm);
 					
 					codeSubForm.hover(function() {
@@ -234,6 +246,37 @@ var StackFiddle = function() {
 			}
 		});
 	};
+		
+	var resizeContainer = function(scrollPosition) {
+		var code = content.find("#sf-code");
+		var codeContainer = content.find("#sf-code-container");
+		var hasNano = code.closest("#sf-nano").size() > 0;
+		
+		if (code.height() > 400) {
+			if (!hasNano) {
+				code
+					.wrap("<div class='nano-container' />")
+					.wrap("<div id='sf-nano' class='nano' />")
+					.wrap("<div class='content' />");
+				
+				code.closest(".nano-container").height(code.height() - 100);
+			}
+			
+			var nanoContent = code.closest(".content");
+			
+			scrollPosition = scrollPosition ? scrollPosition.top : 0;
+			
+			var scrollToPosition =  scrollPosition > nanoContent.offset().top + nanoContent.height()
+			                      ? { scrollTop: nanoContent.scrollTop() + 100 }
+			                      : {};
+
+			content.find("#sf-nano").nanoScroller(scrollToPosition);
+		} else {
+			if (hasNano) {
+				codeContainer.html(code);
+			}
+		}
+	}
 		
 	/*
 	 * Loads the jsFiddle JavaScript frameworks. Uses YQL to 
@@ -288,15 +331,23 @@ var StackFiddle = function() {
 			frameworksSelect = form.find("#sf-frameworks"),
 			codeGroups = form.find(".sf-code-group");
 		
-		$(".sf-show-more", content[0]).live("click", function() {
-			var textarea = $(this).closest(".sf-form-group").find("textarea");
-			textarea.animate({ height: "+=100px" }, 200);
+		$(".sf-show-more", content[0]).live("click", function(event) {
+			var link = $(this),
+				textarea = link.closest(".sf-form-group").find("textarea");
+			
+			textarea.animate({ height: "+=100px" }, 0, function() { 
+				resizeContainer(link.offset());
+			});
 			return false;
 		});
 		
-		$(".sf-show-less", content[0]).live("click", function() {
-			var textarea = $(this).closest(".sf-form-group").find("textarea");
-			textarea.animate({ height: textarea.height() <= 100 ? 10 : "-=100px" }, 200);
+		$(".sf-show-less", content[0]).live("click", function(event) {
+			var link = $(this),
+				textarea = link.closest(".sf-form-group").find("textarea");
+				
+			textarea.animate({ height: textarea.height() <= 100 ? 13 : "-=100px" }, 0, function() { 
+				resizeContainer(link.offset());
+			});
 			return false;
 		});
 		
@@ -327,7 +378,7 @@ var StackFiddle = function() {
 					textTypes.each(function() {
 						var curTextarea = $(this);
 						contentValue += curTextarea.val();
-						curTextarea.attr("disabled", "disabled");
+						curTextarea.prop("disabled", "disabled");
 					});
 					
 					var hiddenInput = $("<input>", { 
