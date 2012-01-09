@@ -393,8 +393,6 @@ var StackFiddle = function() {
 			
 			scrollPosition = scrollPosition ? scrollPosition.top : 0;
 			
-			console.log(scrollPosition, nanoContent.offset().top + nanoContent.height())
-			
 			var scrollToPosition =  scrollPosition > nanoContent.offset().top + nanoContent.height()
 			                      ? { scrollTop: nanoContent.scrollTop() + 100 }
 			                      : {};
