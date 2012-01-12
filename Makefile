@@ -101,21 +101,8 @@ booklink:
 	$(call build_link,js/min/bookmarklet.min.js)
 
 chrome2:
-	$(call build_intro,StackFiddle Content Script,chrome/,content)
-	$(call build_intro,StackFiddle Background,chrome/,background)
-	$(call build_intro,StackFiddle Chrome Init,chrome/,stackfiddle-chrome)
-	
-	$(call combine,js/min/sl-sf.min.js,js/min/stackfiddle-chrome.min.js,js/min/sl-sf-chrome.min.js)
-	
-	$(call combine,js/sl-sf.js,js/chrome/stackfiddle-chrome.js,js/sl-sf-chrome.js)
-	
+	$(call combine,js/sl-sf.js,chrome/js/stackfiddle-chrome.js,chrome/js/sl-sf-chrome.js)
 	cp css/stackfiddle.css chrome/css/stackfiddle.css
-	
-	mv js/min/background.min.js chrome/js/background.min.js
-	mv js/min/content.min.js chrome/js/content.min.js
-	mv js/min/sl-sf-chrome.min.js chrome/js/sl-sf-chrome.min.js
-	mv js/sl-sf-chrome.js chrome/js/sl-sf-chrome.js
-
 	zip -r chrome/stackfiddle-chrome-ext.zip chrome/
 
 cleanup:
@@ -124,7 +111,6 @@ cleanup:
 	rm -rf js/min/bookmarklet.min.js
 	rm -rf js/min/sl-sf.min.js
 	rm -rf js/min/stackfiddle-link.min.js
-	rm -rf js/min/stackfiddle-chrome.min.js
 	rm -rf js/sl-sf.js
 	
 minall:

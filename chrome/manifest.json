@@ -1,19 +1,20 @@
 {
 	"name": "StackFiddle",
-	"version": "0.3",
+	"version": "0.4",
 	"description": "StackFiddle allows you to quickly create a jsFiddle from a StackOveflow question that contains code blocks of HTML, JS and CSS.",
 	"page_action": {
 		"default_title": "",
-		"default_icon": "images/stackfiddle-16.png",
-		"default_popup": "popup.html"
+		"default_icon": "images/stackfiddle-16.png"	
 	},
 	"permissions": [
-		"tabs", "http://stackoverflow.com/*"
+		"tabs", "http://stackoverflow.com/*",
+		"http://query.yahooapis.com/",
+		"http://api.stackoverflow.com/"
 	],
 	"icons": {
 		"16": "images/stackfiddle-16.png",
 		"48": "images/stackfiddle-48.png",
-		"128": "images/stackfiddle-48.png"
+		"128": "images/stackfiddle-128.png"
 	},
 	"background_page": "background.html"
 }
