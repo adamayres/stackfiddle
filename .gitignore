@@ -1,10 +1,10 @@
-build/
-example/
-rubiks/
-src/
-.project
+#build/
+#example/
+#rubiks/
+#src/
+#.project
 
-chrome/build/
-chrome/src/
+#chrome/build/
+#chrome/src/
 
-js/chrome/
+#js/chrome/
