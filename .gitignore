@@ -1,0 +1,10 @@
+build/
+example/
+rubiks/
+src/
+.project
+
+chrome/build/
+chrome/src/
+
+js/chrome/
